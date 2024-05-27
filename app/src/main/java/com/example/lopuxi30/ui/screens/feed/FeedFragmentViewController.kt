@@ -18,11 +18,20 @@ class FeedFragmentViewController(
 ) {
 
     private val recycler = binding.recyclerView
+    private val swipeRefreshLayout = binding.swipeRefreshLayout
 
     fun setupViews() {
         viewModel.getFeed()
 
         bindRecycler()
+        bindSwipeRefreshLayout()
+    }
+
+    private fun bindSwipeRefreshLayout() {
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refresh()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun bindRecycler() {

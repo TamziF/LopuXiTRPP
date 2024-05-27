@@ -45,4 +45,10 @@ class FeedViewModel @Inject constructor(
         }
     }
 
+    fun refresh() {
+        requestNumber = 0
+        _posts.value = arrayListOf()
+        getFeed()
+    }
+
 }
