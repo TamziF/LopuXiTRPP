@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">LopuXi 3.0</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="UsernameHint">Username</string>
+    <string name="PasswordHint">Password</string>
+    <string name="passwords_are_not_equal">Passwords are not equal</string>
+    <string name="RepeatPasswordHint">Repeat password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="SharedPrefs">LopuXi SharedPrefs</string>
+    <string name="SharedPrefs_Token">SharedPrefs token</string>
+    <string name="SharedPrefs_Username">SharedPrefs Username</string>
+    <string name="SharedPrefs_Password">SharedPrefs Password</string>
+    <string name="description">Description</string>
+    <string name="title">LopuXi</string>
+</resources>
