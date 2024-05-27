@@ -58,7 +58,6 @@ class AuthRegViewModel @Inject constructor(
                 _authRegStatus.value = AuthRegStatus.DONE
             } else {
                 _authRegStatus.value = AuthRegStatus.ERROR
-                _authRegStatus.value = AuthRegStatus.DEFAULT
             }
         }
     }
@@ -71,7 +70,6 @@ class AuthRegViewModel @Inject constructor(
                 authorize(context)
             } else {
                 _authRegStatus.value = AuthRegStatus.ERROR
-                _authRegStatus.value = AuthRegStatus.DEFAULT
             }
         }
     }

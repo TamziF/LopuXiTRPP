@@ -21,6 +21,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
+enum class CreatePostStatus { DEFAULT, LOADING, DONE, ERROR }
 
 @HiltViewModel
 class CreatePostViewModel @Inject constructor(
@@ -28,6 +29,12 @@ class CreatePostViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val postBody = CreatePostBody("", "", arrayListOf(""))
+
+    private val _buttonEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val buttonEnabled: StateFlow<Boolean> = _buttonEnabled
+
+    private val _createPostStatus: MutableStateFlow<CreatePostStatus> = MutableStateFlow(CreatePostStatus.DEFAULT)
+    val createPostStatus: StateFlow<CreatePostStatus> = _createPostStatus
 
     var token = ""
 
@@ -39,9 +46,11 @@ class CreatePostViewModel @Inject constructor(
 
     fun setDescription(description: String) {
         postBody.text = description
+        checkButtonEnabled()
     }
 
     fun createPost(context: Context?) {
+        _createPostStatus.value = CreatePostStatus.LOADING
         viewModelScope.launch(Dispatchers.IO) {
             loadImage(uri, context)
             //createPostRepository.createPost(token, postBody)
@@ -61,6 +70,9 @@ class CreatePostViewModel @Inject constructor(
             if (response.isSuccessful && response.body() != null) {
                 postBody.photosID[0] = (response.body()!!.uri)
                 createPostRepository.createPost(token, postBody)
+                _createPostStatus.value = CreatePostStatus.DONE
+            } else {
+                _createPostStatus.value = CreatePostStatus.ERROR
             }
         }
     }
@@ -81,6 +93,10 @@ class CreatePostViewModel @Inject constructor(
             }
         }
         return filePath
+    }
+
+    private fun checkButtonEnabled() {
+        _buttonEnabled.value = postBody.text.isNotEmpty()
     }
 
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.lopuxi30.R
@@ -20,20 +21,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /*binding.bottomNavigation.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.feedFragment -> {
-                    true
-                }
-
-                R.id.createPostFragment -> {
-                    true
-                }
-
-                else -> false
-            }
-        }*/
-
         val appBarConfiguration: AppBarConfiguration = AppBarConfiguration.Builder(
             R.id.feedFragment, R.id.createPostFragment
         ).build()
@@ -44,6 +31,26 @@ class MainActivity : AppCompatActivity() {
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController)
+
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.feedFragment -> {
+                    navController.navigate(R.id.feedFragment, null, navOptions {
+                        popUpTo(R.id.nav_graph_xml) { inclusive = true }
+                    })
+                    true
+                }
+
+                R.id.createPostFragment -> {
+                    navController.navigate(R.id.createPostFragment, null, navOptions {
+                        popUpTo(R.id.nav_graph_xml) { inclusive = true }
+                    })
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     fun showBottomNavigationView() {

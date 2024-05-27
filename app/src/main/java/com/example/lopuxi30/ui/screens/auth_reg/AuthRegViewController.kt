@@ -62,6 +62,8 @@ class AuthRegViewController(
                         }
                         AuthRegStatus.ERROR -> {
                             showMessage("Error")
+                            authRegButton.visibility = View.VISIBLE
+                            loadingImage.visibility = View.INVISIBLE
                         }
                         AuthRegStatus.DEFAULT -> {
                             authRegButton.visibility = View.VISIBLE

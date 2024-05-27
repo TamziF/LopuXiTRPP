@@ -4,16 +4,23 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.example.lopuxi30.databinding.FragmentCreatePostBinding
 import com.example.lopuxi30.ui.recyclers.images.ImagesAdapter
 import com.example.lopuxi30.ui.recyclers.images.RecyclerImagesAdapter
+import com.example.lopuxi30.ui.stateholders.AuthRegStatus
+import com.example.lopuxi30.ui.stateholders.CreatePostStatus
 import com.example.lopuxi30.ui.stateholders.CreatePostViewModel
 import kotlinx.coroutines.launch
 
@@ -29,6 +36,7 @@ class CreatePostFragmentViewController(
     private val postImage = binding.postImage
     private val descriptionEt = binding.descriptionEt
     private val createPostButton = binding.postButton
+    private val loadingImage = binding.statusImage
 
     //private val adapter = RecyclerImagesAdapter(arrayListOf(), false)
 
@@ -39,12 +47,49 @@ class CreatePostFragmentViewController(
         bindPostImage()
         bindDescriptionEt()
         bindCreatePostButton()
+        bindCreatePostStatus()
     }
 
     private fun bindPostImage() {
         postImage.setOnClickListener {
             openImagePicker()
         }
+    }
+
+    private fun bindCreatePostStatus() {
+        fragment!!.viewLifecycleOwner.lifecycleScope.launch {
+            fragment!!.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.createPostStatus.collect { status ->
+                    when (status) {
+                        CreatePostStatus.LOADING -> {
+                            createPostButton.visibility = View.INVISIBLE
+                            loadingImage.visibility = View.VISIBLE
+                        }
+
+                        CreatePostStatus.DONE -> {
+                            showMessage("Done")
+                            createPostButton.visibility = View.VISIBLE
+                            loadingImage.visibility = View.INVISIBLE
+                        }
+
+                        CreatePostStatus.ERROR -> {
+                            showMessage("Error")
+                            createPostButton.visibility = View.VISIBLE
+                            loadingImage.visibility = View.INVISIBLE
+                        }
+
+                        CreatePostStatus.DEFAULT -> {
+                            createPostButton.visibility = View.VISIBLE
+                            loadingImage.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showMessage(message: String) {
+        Toast.makeText(fragment!!.requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     /*private fun bindRecycler() {
@@ -70,6 +115,14 @@ class CreatePostFragmentViewController(
     private fun bindCreatePostButton() {
         createPostButton.setOnClickListener {
             viewModel.createPost(fragment!!.requireContext())
+        }
+
+        fragment!!.viewLifecycleOwner.lifecycleScope.launch {
+            fragment!!.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.buttonEnabled.collect { isEnabled ->
+                    createPostButton.isEnabled = isEnabled
+                }
+            }
         }
     }
 
